@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>석탑대동제 고대생 존 관리자 통제 패널</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <div class="app-container admin-container">
+    <div class="admin-header">
+      <img src="logo.png" alt="고려대학교 로고" class="admin-logo-img">
+      <h1>석준위 긴급 통제 패널</h1>
+      <p>실시간으로 혼잡도, 공연 팀 정보 및 긴급 공지를 수정할 수 있습니다.</p>
+    </div>
+
+    <!-- 관리자 인증 카드 -->
+    <div class="card" id="adminAuthCard">
+      <h2>스태프 인증</h2>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px; text-align:center;">
+        안전한 상황 전파를 위해 스태프 인증이 필요합니다.
+      </p>
+      
+      <div class="form-group">
+        <label for="adminPassword">스태프 비밀번호</label>
+        <input type="password" id="adminPassword" class="form-control" placeholder="비밀번호 입력">
+      </div>
+      
+      <div class="error-msg" id="authError"></div>
+      
+      <button class="btn-primary" id="btnAuth">스태프 로그인</button>
+    </div>
+
+    <!-- 관리 조작 패널 (인증 후 노출) -->
+    <div id="adminControls" style="display: none; display: flex; flex-direction: column; gap: 20px;">
+      
+      <!-- 1. 혼잡도 통제 구역 -->
+      <div class="card">
+        <h3>🚨 구역별 실시간 혼잡도 제어</h3>
+        
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label>고대생 존 내부 혼잡도 단계</label>
+          <div class="btn-grid-4" id="zoneCongestionGroup">
+            <button class="btn-status-select" data-val="여유">여유</button>
+            <button class="btn-status-select" data-val="보통">보통</button>
+            <button class="btn-status-select" data-val="혼잡">혼잡</button>
+            <button class="btn-status-select" data-val="진입제한">진입제한</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>민주광장 통로 혼잡도 단계</label>
+          <div class="btn-grid-4" id="passageCongestionGroup">
+            <button class="btn-status-select" data-val="여유">여유</button>
+            <button class="btn-status-select" data-val="보통">보통</button>
+            <button class="btn-status-select" data-val="혼잡">혼잡</button>
+            <button class="btn-status-select" data-val="진입제한">진입제한</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 무대 상황 통제 구역 -->
+      <div class="card">
+        <h3>🎵 현재 공연 무대 정보 제어</h3>
+        
+        <div class="form-group">
+          <label for="artistInput">공연 진행 중인 아티스트 / 팀명</label>
+          <input type="text" id="artistInput" class="form-control" placeholder="예: 고려대학교 응원단">
+        </div>
+        
+        <button class="btn-primary" id="btnSaveArtist" style="margin-top: 5px;">무대 정보 변경</button>
+      </div>
+
+      <!-- 3. 긴급 공지 송신 구역 -->
+      <div class="card">
+        <h3>📢 긴급 상황 공지 전송</h3>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height:1.4;">
+          메시지를 전송하면 대기 중인 모든 학생들의 모바일 화면 상단에 빨간색 롤링 배너 형태로 즉시 팝업되며 공지 히스토리에 누적됩니다.
+        </p>
+
+        <div class="form-group">
+          <label for="announcementInput">긴급 전송 메시지</label>
+          <textarea id="announcementInput" class="form-control" placeholder="예: 민주광장 좌측 통로 폐쇄. 우측 우회 통로를 적극 이용바랍니다."></textarea>
+        </div>
+        
+        <button class="btn-primary" id="btnSendAnnouncement" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); margin-top: 5px;">긴급 공지 전송</button>
+      </div>
+
+      <!-- 4. 대기자 명단 리스트업 구역 (추가) -->
+      <div class="card" style="max-height: 400px; display: flex; flex-direction: column;">
+        <h3>📋 대기표 발급 현황 명단</h3>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">
+          현재까지 발급된 전체 대기 번호 순번 리스트입니다. (실시간 자동 동기화)
+        </p>
+        <div style="overflow-y: auto; flex: 1; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(0,0,0,0.2);">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
+                <th style="padding: 10px 14px; font-weight:600; color:var(--text-muted); width: 15%;">순번</th>
+                <th style="padding: 10px 14px; font-weight:600; color:var(--text-muted); width: 35%;">학번</th>
+                <th style="padding: 10px 14px; font-weight:600; color:var(--text-muted); width: 25%;">이름</th>
+                <th style="padding: 10px 14px; font-weight:600; color:var(--text-muted); width: 25%;">입장 예정</th>
+              </tr>
+            </thead>
+            <tbody id="ticketListTableBody">
+              <tr>
+                <td colspan="3" style="padding: 20px; text-align: center; color: var(--text-muted);">발급된 대기표가 없습니다.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 10px;">
+        <button class="btn-logout" id="btnAdminLogout" style="float: none; display: inline-block;">스태프 로그아웃</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast">메시지가 표시됩니다.</div>
+
+  <!-- 관리자 스크립트 연결 -->
+  <script src="admin.js"></script>
+</body>
+</html>
