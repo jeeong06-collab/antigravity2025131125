@@ -1,0 +1,832 @@
+/* Google Fonts: Outfit */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #0b0f19;
+  --card-bg: rgba(22, 28, 45, 0.7);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --crimson: #A50034;
+  --crimson-light: #d62246;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  /* Congestion Colors */
+  --color-safe: #10b981;    /* 여유: 녹색 */
+  --color-normal: #3b82f6;  /* 보통: 청색 */
+  --color-warning: #f59e0b; /* 혼잡: 황색 */
+  --color-danger: #ef4444;  /* 진입제한: 적색 */
+  
+  --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glass-effect: backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* 실시간 캡처 방지 롤링 워터마크 배경 */
+.watermark-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  transform: rotate(-15deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  font-size: 1.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  user-select: none;
+  animation: watermark-scroll 30s linear infinite;
+}
+
+.watermark-line {
+  display: flex;
+  gap: 100px;
+}
+
+@keyframes watermark-scroll {
+  0% {
+    transform: translate(0, 0) rotate(-15deg);
+  }
+  100% {
+    transform: translate(-10%, -10%) rotate(-15deg);
+  }
+}
+
+/* 메인 모바일 컨테이너 (모바일 뷰에 최적화) */
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, rgba(165, 0, 52, 0.15) 0%, rgba(11, 15, 25, 0.98) 70%);
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 40px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.8);
+}
+
+/* 1. 최상단 긴급 공지 배너 */
+.emergency-banner {
+  background: linear-gradient(90deg, #b91c1c 0%, var(--crimson) 50%, #b91c1c 100%);
+  color: #ffffff;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(165, 0, 52, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.emergency-banner .badge {
+  background-color: #ffffff;
+  color: var(--crimson);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  animation: pulse 1.5s infinite;
+}
+
+.emergency-banner .text-flow {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.emergency-banner .text-flow p {
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee 25s linear infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-100%, 0, 0); }
+}
+
+/* 2. 헤더 */
+header {
+  padding: 24px 20px 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  background-color: var(--crimson);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.brand-logo-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+}
+
+.admin-logo-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 14px;
+  display: inline-block;
+}
+
+.brand-text h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.brand-text p {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.btn-logout {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* 3. 메인 콘텐츠 영역 */
+main {
+  flex: 1;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 카드 공통 스타일 */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow-main);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 4. 로그인 폼 */
+.login-card h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.login-card > p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.form-control {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--crimson-light);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 10px rgba(165, 0, 52, 0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-light) 100%);
+  border: none;
+  color: #fff;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(165, 0, 52, 0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.error-msg {
+  color: var(--color-danger);
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-height: 18px;
+  margin-top: 4px;
+}
+
+/* 5. 번호표 발급 및 대기 카드 */
+.ticket-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 250px;
+  justify-content: center;
+}
+
+.ticket-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 0;
+}
+
+.ticket-placeholder p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.ticket-issued {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.ticket-number-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ticket-number {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  text-shadow: 0 0 20px rgba(165, 0, 52, 0.5);
+  margin-bottom: 12px;
+}
+
+/* 캡처 방지용 화려한 QR 박스 */
+.qr-container-wrapper {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0 15px 0;
+}
+
+/* dynamic 물결(Ripple) 애니메이션 백그라운드 */
+.qr-ripple-bg {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 24px;
+  background: radial-gradient(circle, rgba(165, 0, 52, 0.3) 0%, rgba(0,0,0,0) 70%);
+  animation: pulse-ripple 2s infinite ease-in-out;
+  z-index: 1;
+}
+
+.qr-box {
+  width: 160px;
+  height: 160px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 10px;
+  z-index: 2;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 4px solid var(--crimson);
+  position: relative;
+}
+
+.qr-box canvas, .qr-box img {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+@keyframes pulse-ripple {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+}
+
+/* 실시간 dynamic 요소 */
+.realtime-timer-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 16px;
+  border-radius: 12px;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.clock-live {
+  font-family: monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--crimson-light);
+  letter-spacing: 0.5px;
+}
+
+.token-expiry-countdown {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.countdown-seconds {
+  color: #fff;
+  font-weight: 700;
+}
+
+.student-info-badge {
+  font-size: 0.75rem;
+  background: rgba(165, 0, 52, 0.2);
+  border: 1px solid rgba(165, 0, 52, 0.4);
+  color: var(--text-main);
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+/* 6. 혼잡도 대시보드 */
+.dashboard-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  border-left: 4px solid var(--crimson);
+  padding-left: 8px;
+}
+
+.congestion-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.congestion-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.congestion-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.congestion-status {
+  font-size: 1.2rem;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* 상태별 스타일 동적 세팅 */
+.status-safe {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-safe);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.status-normal {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--color-normal);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+.status-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.status-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  animation: pulse-border 1.5s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* 아티스트 보드 */
+.artist-board {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.artist-icon {
+  font-size: 1.5rem;
+  animation: bounce 2s infinite;
+}
+
+.artist-info {
+  flex: 1;
+}
+
+.artist-info label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.artist-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* 7. 공지사항 모달 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* 타임라인 스타일 */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  padding-left: 16px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.timeline-item {
+  position: relative;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -17px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--crimson);
+  box-shadow: 0 0 8px var(--crimson);
+}
+
+.timeline-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.timeline-text {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #e2e8f0;
+}
+
+/* 관리자 패널 관련 추가 스타일 */
+.admin-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.admin-header h1 {
+  font-size: 1.8rem;
+  color: var(--crimson-light);
+  margin-bottom: 6px;
+}
+
+.admin-header p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.btn-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn-status-select {
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(255,255,255,0.02);
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.btn-status-select.active[data-val="여유"] {
+  background: var(--color-safe);
+  color: #fff;
+  box-shadow: 0 0 12px var(--color-safe);
+}
+.btn-status-select.active[data-val="보통"] {
+  background: var(--color-normal);
+  color: #fff;
+  box-shadow: 0 0 12px var(--color-normal);
+}
+.btn-status-select.active[data-val="혼잡"] {
+  background: var(--color-warning);
+  color: #fff;
+  box-shadow: 0 0 12px var(--color-warning);
+}
+.btn-status-select.active[data-val="진입제한"] {
+  background: var(--color-danger);
+  color: #fff;
+  box-shadow: 0 0 12px var(--color-danger);
+}
+
+.form-group textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  border: 1px solid var(--crimson);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.toast-container.show {
+  opacity: 1;
+  transform: translate(-50%, -10px);
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* 10. 입장 예정 시간 및 관리자 테이블 스타일 추가 */
+.entry-time-box {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px dashed rgba(245, 158, 11, 0.4);
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin: 8px 0 14px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  max-width: 280px;
+  animation: pulse-border-yellow 2s infinite ease-in-out;
+}
+
+.entry-time-label {
+  font-size: 0.7rem;
+  color: var(--color-warning);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.entry-time-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+}
+
+@keyframes pulse-border-yellow {
+  0% { border-color: rgba(245, 158, 11, 0.2); }
+  50% { border-color: rgba(245, 158, 11, 0.6); }
+  100% { border-color: rgba(245, 158, 11, 0.2); }
+}
+
+#ticketListTableBody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#ticketListTableBody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+#ticketListTableBody td {
+  padding: 10px 14px;
+  color: #e2e8f0;
+}
+
+#ticketListTableBody tr:last-child {
+  border-bottom: none;
+}
+

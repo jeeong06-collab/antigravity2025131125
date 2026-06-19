@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>석탑대동제 고대생 존 대기 시스템</title>
+  <meta name="description" content="고려대학교 석탑대동제 고대생 존 입장 대기표 발급 시스템. 학번 인증 후 디지털 번호표를 발급받으세요.">
+  <link rel="stylesheet" href="style.css">
+  <script src="qrcode.min.js"></script>
+</head>
+<body>
+
+  <!-- 실시간 캡처 방지용 롤링 워터마크 배경 -->
+  <div class="watermark-bg" id="watermarkBg"></div>
+
+  <div class="app-container">
+    <!-- 1. 긴급 공지 배너 -->
+    <div class="emergency-banner" id="emergencyBanner" style="display: none;">
+      <span class="badge">긴급</span>
+      <div class="text-flow">
+        <p id="bannerText"></p>
+      </div>
+    </div>
+
+    <!-- 2. 헤더 -->
+    <header>
+      <div class="brand">
+        <img src="logo.png" alt="고려대학교 로고" class="brand-logo-img">
+        <div class="brand-text">
+          <h1>석탑대동제<br>대기관리</h1>
+          <p>KOREA UNIVERSITY FESTIVAL 2026</p>
+        </div>
+      </div>
+      <button class="btn-logout" id="btnLogout" style="display: none;">로그아웃</button>
+    </header>
+
+    <!-- 안내 배너: 정적 버전 알림 -->
+    <div style="background: rgba(165,0,52,0.12); border: 1px solid rgba(165,0,52,0.3); border-radius: 10px; padding: 10px 16px; margin-bottom: 14px; font-size: 0.78rem; color: var(--text-muted); text-align: center; line-height: 1.5;">
+      📱 이 페이지는 <strong style="color:var(--text-primary);">GitHub Pages 데모 버전</strong>입니다. 실제 행사 당일에는 현장 Wi-Fi 로컬 서버 버전을 이용해 주세요.
+    </div>
+
+    <main>
+      <!-- (A) 로그인 카드 -->
+      <div class="card login-card" id="loginCard">
+        <h2>재학생 인증 로그인</h2>
+        <p>고대생 존 입장을 위해 학번과 이름을 입력해 주세요. (외부인 입장 제한)</p>
+
+        <div class="form-group">
+          <label for="studentId">학번 (10자리)</label>
+          <input type="text" id="studentId" class="form-control" placeholder="예: 2025131125" maxlength="10" inputmode="numeric">
+        </div>
+
+        <div class="form-group">
+          <label for="studentName">이름</label>
+          <input type="text" id="studentName" class="form-control" placeholder="이름 입력">
+        </div>
+
+        <div class="error-msg" id="loginError"></div>
+        <button class="btn-primary" id="btnLogin">인증 로그인</button>
+      </div>
+
+      <!-- (B) 대기표 발급 및 QR 티켓 카드 -->
+      <div class="card ticket-card" id="ticketCard" style="display: none;">
+        <!-- 발급 전 상태 -->
+        <div class="ticket-placeholder" id="ticketPlaceholder">
+          <p>고대생 존 내부 입장 대기표를 디지털로 발급받으세요. 현장 밤샘 대기 체증 완화를 위해 순차 번호가 발급됩니다.</p>
+          <button class="btn-primary" id="btnIssueTicket">고대생 존 번호표 발급받기</button>
+          <div class="error-msg" id="issueError"></div>
+        </div>
+
+        <!-- 발급 완료 상태 -->
+        <div class="ticket-issued" id="ticketIssued" style="display: none;">
+          <span class="ticket-number-label">입장 대기 번호</span>
+          <span class="ticket-number" id="ticketNumDisplay">000</span>
+
+          <div class="qr-container-wrapper">
+            <div class="qr-ripple-bg"></div>
+            <div class="qr-box" id="qrcode"></div>
+          </div>
+
+          <div class="entry-time-box">
+            <span class="entry-time-label">입장 예정 시간</span>
+            <span class="entry-time-val" id="entryTimeDisplay">오후 06:00</span>
+          </div>
+
+          <div class="student-info-badge" id="studentBadge">학번: -</div>
+
+          <div class="realtime-timer-box">
+            <div class="clock-live" id="liveClock">2026-06-19 18:00:00.000</div>
+            <div class="token-expiry-countdown">
+              QR코드 갱신까지 <span class="countdown-seconds" id="countdownSec">30</span>초 남음
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- (C) 실시간 현장 대시보드 -->
+      <div class="card dashboard-card">
+        <h3>실시간 현장 대시보드</h3>
+
+        <div class="congestion-grid">
+          <div class="congestion-item">
+            <div class="congestion-label">고대생 존 내부</div>
+            <div class="congestion-status status-normal" id="zoneCongestion">현장 확인</div>
+          </div>
+          <div class="congestion-item">
+            <div class="congestion-label">민주광장 통로</div>
+            <div class="congestion-status status-normal" id="passageCongestion">현장 확인</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px; font-size: 0.75rem; color: var(--text-muted); text-align: center;">
+          ⚠️ 혼잡도는 현장 상황에 따라 변동될 수 있습니다. 안전 요원의 안내를 따라주세요.
+        </div>
+
+        <div class="artist-board" style="margin-top: 14px;">
+          <div class="artist-icon">🎤</div>
+          <div class="artist-info">
+            <label>현재 무대 공연 팀</label>
+            <div class="artist-name" id="artistName">현장에서 확인해주세요</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 공지 모달 -->
+  <div class="modal-overlay" id="announcementModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📢 공지사항</h3>
+        <button class="modal-close" id="btnModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="timeline" id="timelineContainer">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">공지</div>
+            <div class="timeline-text">이 페이지는 GitHub Pages 데모 버전입니다. 실제 행사 공지는 현장 서버를 통해 전달됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast"></div>
+
+  <script src="web.js"></script>
+</body>
+</html>
